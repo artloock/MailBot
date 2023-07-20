@@ -40,7 +40,7 @@ receiver_email = input("Enter the supplier's email: ")
 
 # Set the email subject and message
 subject = "Email test"
-message = "Hello Word"
+message = "Hello World"
 
 # Send the email
 send_email(sender_email, sender_password, receiver_email, subject, message)
