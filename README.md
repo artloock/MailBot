@@ -1,33 +1,26 @@
-# MailBot 🤖 📧
+# MailBot (EN/JA) | Secure Email Automation for Corporate Use
 
-Professional automation tool for secure email delivery.
-
-## 🇯🇵 Project Overview / 概要
-このプロジェクトは、Pythonで作ったメール送信ツールです。
-(Este projeto é uma ferramenta de envio de e-mail feita em Python.)
-
-効率（Efficiency）とセキュリティを大切にしています。
-(Valorizo a eficiência e a segurança.)
-
-## 🛠️ Key Features / 特徴
-* **Security:** Use of `.env` files to protect passwords. (パスワードを守るために.envを使います)
-* **Internationalization:** Full support for Japanese characters (UTF-8). (日本語の文字に対応しています)
-* **Modularity:** Easy to connect with Gmail, Outlook, and Yahoo JP. (色々なメールサービスで使えます)
-
-## 📂 Architecture / 構成
-
-* `src/`: Core logic (メインコード)
-* `config.py`: SMTP settings management (設定ファイル)
-* `docs/`: Technical explanations (技術ドキュメント)
-
-## 🚀 How to use / 使い方
-1. Install requirements: `pip install python-dotenv`
-2. Configure your `.env` file.
-3. Run: `python src/Email-prompt.py`
+**EN:** MailBot is a lightweight Python email-sending utility designed for corporate-friendly automation: simple configuration, secure secret handling, and predictable outputs.  
+**JA:** MailBot は、企業利用を想定した軽量のメール送信ツールです。設定が簡単で、秘密情報を安全に扱い、安定した出力を提供します。
 
 ---
-## 👤 Author / 作家
-**Stefanini**
-* IT Support & Infrastructure Background.
-* Japanese Language Learner (N3 level goal).
-* [[LinkedIn Link](https://www.linkedin.com/in/arthur-alves-stefanini-973a99169/)] | [Portfolio Link SOON]
+
+## Key Features / 主な機能
+- **Secure secrets** via `.env` (no passwords hardcoded) / `.env` により秘密情報を安全に管理
+- **UTF-8 ready** (Japanese content support) / UTF-8 対応（日本語本文OK）
+- **SMTP compatible** (Gmail, Outlook, Yahoo, corporate SMTP) / 各種SMTP対応（Gmail/Outlook/社内SMTP等）
+- **Clean structure** (`src/`, `docs/`, `tests/`) / 構成が明確（src/docs/tests）
+
+---
+
+## Quick Start / クイックスタート
+
+### 1) Install / インストール
+```bash
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# Linux/macOS:
+# source .venv/bin/activate
+
+pip install -r requirements.txt
