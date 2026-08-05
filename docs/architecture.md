@@ -1,29 +1,44 @@
-# Project Architecture (Architecture Design)
+# Architecture
 
-## Overview
-The MailBot system is designed with a focus on **Security** and **Modularity**. 
-This project uses a "Separation of Concerns" approach to make it professional and enterprise-ready.
+## Scope
 
+MailBot is a small command-line SMTP client for sending one UTF-8 plain-text message at a time. It is a portfolio and learning project, not a bulk-mail platform, queue processor, or corporate notification service.
 
+## Components
 
----
+### `src/config.py`
 
-## 1. Environment Variables (.env)
-**Role:** Security and Privacy.
+- defines SMTP provider presets;
+- reads credentials and overrides from environment variables;
+- validates ports, timeouts, and transport security;
+- keeps secrets outside the repository.
 
-* **Purpose:** Stores sensitive data like email addresses and passwords.
-* **Security:** This file is listed in `.gitignore`. It is never uploaded to GitHub.
-* **Market Standard:** This follows the best practices for security (APPI compliance in Japan).
+### `src/mailbot.py`
 
-## 2. Configuration File (config.py)
-**Role:** Centralized Management.
+- parses CLI arguments;
+- validates recipient, subject, and body;
+- builds a UTF-8 `EmailMessage`;
+- selects SMTP, STARTTLS, or SMTP-over-SSL;
+- returns predictable process exit codes.
 
-* **Purpose:** Stores all SMTP server settings (Gmail, Outlook, Yahoo JP) in one place.
-* **Scalability:** To add a new email provider, you only update this file. You do not need to change the main logic.
-* **Efficiency:** Centralizing constants makes the code cleaner and easier to maintain.
+### `tests/`
 
-## 3. Source Code (src/Email-prompt.py)
-**Role:** Core Logic.
+- validates provider configuration;
+- checks Japanese and Portuguese UTF-8 content;
+- tests header-injection rejection;
+- mocks SMTP so automated tests never send real email.
 
-* **Function:** The main script imports settings from `config.py` and secrets from `.env`.
-* **Internationalization:** Uses UTF-8 encoding to support Japanese characters (Kanji/Kana) without errors.
+## Security Boundaries
+
+- `.env` reduces accidental credential commits but is not a secret manager.
+- TLS protects transport when configured correctly; it does not guarantee recipient identity or message confidentiality after delivery.
+- Provider app passwords or dedicated SMTP credentials are preferred over primary account passwords.
+- Bulk delivery, retry queues, rate limiting, audit logging, and compliance controls are outside the current scope.
+
+## Data Flow
+
+1. `.env` and CLI arguments provide configuration and message content.
+2. Input is validated before any connection is opened.
+3. The message is encoded as UTF-8.
+4. The selected SMTP transport authenticates and sends the message.
+5. The process returns `0`, `1`, or `2` for automation-friendly handling.

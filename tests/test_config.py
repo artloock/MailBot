@@ -1,25 +1,40 @@
-﻿import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import os
+import unittest
+from unittest.mock import patch
 
-from src.config import SMTP_SETTINGS
+from src.config import ConfigurationError, SmtpConfig
 
-def test_environment():
-    print("🔍 Verificando ambiente...")
 
-    # Teste 1: Verifica se o .env foi criado (indiretamente via variável)
-    from dotenv import load_dotenv
-    load_dotenv()
-    if os.getenv("EMAIL_USER"):
-        print("✅ Variáveis de ambiente: OK")
-    else:
-        print("❌ Erro: EMAIL_USER não encontrado no .env")
+class SmtpConfigTests(unittest.TestCase):
+    def test_gmail_preset_uses_environment_credentials(self):
+        environment = {
+            "SMTP_USER": "sender@example.com",
+            "SMTP_PASSWORD": "app-password",
+        }
+        with patch.dict(os.environ, environment, clear=True):
+            config = SmtpConfig.from_environment("gmail")
 
-    # Teste 2: Verifica se as configurações de SMTP estão carregando
-    if "gmail" in SMTP_SETTINGS:
-        print("✅ Configurações de SMTP: OK")
-    else:
-        print("❌ Erro: SMTP_SETTINGS não carregado corretamente")
+        self.assertEqual(config.host, "smtp.gmail.com")
+        self.assertEqual(config.port, 587)
+        self.assertEqual(config.security, "starttls")
+        self.assertEqual(config.sender, "sender@example.com")
+
+    def test_yahoo_jp_preset_uses_direct_ssl(self):
+        environment = {
+            "SMTP_USER": "sender@example.com",
+            "SMTP_PASSWORD": "app-password",
+        }
+        with patch.dict(os.environ, environment, clear=True):
+            config = SmtpConfig.from_environment("yahoo_jp")
+
+        self.assertEqual(config.port, 465)
+        self.assertEqual(config.security, "ssl")
+
+    def test_missing_credentials_raise_configuration_error(self):
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaises(ConfigurationError):
+                SmtpConfig.from_environment("gmail")
+
 
 if __name__ == "__main__":
-    test_environment()
+    unittest.main()
